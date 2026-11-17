@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RR AI &amp; Automation Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* Layout: 16:9 slides stacked vertically, every size in cqw so a slide scales as one picture (matches the team's Shopee deck) */
+:root{
+  --brand:#ee4d2d;      /* Shopee orange: titles, rules */
+  --navy:#1f3864;       /* section header bars, as in the reference deck */
+  --ink:#1d1d1f;
+  --muted:#6b6b70;
+  --panel:#f2f2f2;      /* right-hand summary panel */
+  --line:#d9d9d9;
+  --todo:#fff1b8;       /* 待補 highlight */
+  --stage:#d8d8db;      /* background behind the slides */
+  --live:#2e7d32; --test:#1f4e8c; --dev:#8a8a8a; --check:#b7791f;
+  --display:"Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --body:"Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--stage);color:var(--ink);font-family:var(--body)}
+.deck{display:flex;flex-direction:column;gap:24px;padding:24px 16px 48px;max-width:1280px;margin:0 auto}
+.slide{position:relative;aspect-ratio:16/9;background:#fff;container-type:inline-size;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.in{position:absolute;inset:0;padding:2.2cqw 2.6cqw 3.2cqw;display:flex;flex-direction:column;font-size:1.22cqw;line-height:1.45}
+.hd{display:flex;align-items:flex-start;gap:1.2cqw;padding-bottom:.9cqw;border-bottom:.32cqw solid var(--brand);position:relative}
+.hd::after{content:"";position:absolute;right:-.6cqw;bottom:-.75cqw;width:1.2cqw;height:1.2cqw;border-radius:50%;background:var(--brand)}
+.logo{flex:none;width:3.3cqw;height:3.3cqw;border-radius:.5cqw;background:var(--brand);color:#fff;font-weight:900;font-size:2.2cqw;display:grid;place-items:center;line-height:1}
+.hd h2{font-family:var(--display);font-size:2.05cqw;line-height:1.28;font-weight:700;text-wrap:balance}
+.hd h2 .tag{color:var(--brand)}
+.ft{position:absolute;left:0;right:2.6cqw;bottom:1cqw;text-align:center;color:var(--muted);font-size:.95cqw}
+.ft b{position:absolute;right:0;font-weight:500;color:var(--ink)}
+.body{flex:1;min-height:0;padding-top:1.6cqw;display:flex;flex-direction:column;gap:1.2cqw}
+.todo{background:var(--todo);padding:0 .25em;border-radius:.2em}
+ul{padding-left:1.2em}
+li{margin:.15em 0}
+li::marker{color:var(--brand)}
+
+/* cover */
+.cover .in{padding:0;flex-direction:row}
+.cover .l{flex:1;padding:6cqw 5cqw;display:flex;flex-direction:column;justify-content:center;gap:1.6cqw}
+.cover .r{width:30cqw;background:var(--brand);color:#fff;display:flex;flex-direction:column;justify-content:flex-end;padding:4cqw 3cqw;gap:.6cqw;font-size:1.3cqw}
+.cover .r .big{font-size:7cqw;font-weight:900;line-height:1}
+.eyebrow{color:var(--brand);font-weight:700;font-size:1.4cqw;letter-spacing:.05em}
+.cover h1{font-family:var(--display);font-size:4.6cqw;line-height:1.15;font-weight:900;text-wrap:balance}
+.cover p{font-size:1.7cqw;color:var(--muted);max-width:40cqw}
+.cover .meta{font-size:1.2cqw;color:var(--muted);margin-top:2cqw}
+
+/* key message */
+.lead{font-size:1.6cqw;font-weight:500;max-width:80cqw}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2cqw}
+.tile{border-top:.4cqw solid var(--brand);background:var(--panel);padding:1.2cqw 1.3cqw 1.3cqw}
+.tile .n{font-size:4cqw;font-weight:900;line-height:1.05;color:var(--brand);font-variant-numeric:tabular-nums}
+.tile .n small{font-size:1.6cqw;font-weight:700}
+.tile .k{font-weight:700;margin-top:.4cqw}
+.tile .s{color:var(--muted);font-size:1.05cqw;margin-top:.2cqw}
+.cycle{display:flex;align-items:stretch;gap:0;margin-top:.4cqw}
+.step{flex:1;border:.12cqw solid var(--brand);background:#fdf0ec;padding:1cqw 1.2cqw}
+.step b{display:block;color:var(--brand);font-size:1cqw;letter-spacing:.05em}
+.step span{font-weight:700;font-size:1.35cqw}
+.arrow{flex:none;width:2.6cqw;display:grid;place-items:center;color:var(--brand);font-size:2cqw;font-weight:900}
+.cyclecap{color:var(--muted);font-size:1.05cqw}
+
+/* summary tables */
+.cat{display:flex;align-items:baseline;gap:1cqw}
+.cat h3{font-size:1.5cqw;text-decoration:underline;text-underline-offset:.3em;font-weight:900}
+.cat span{color:var(--muted);font-size:1.05cqw}
+table{width:100%;border-collapse:collapse;font-size:1cqw;line-height:1.38}
+th{background:var(--ink);color:#fff;text-align:left;font-weight:700;padding:.45cqw .6cqw}
+td{border:.08cqw solid var(--line);padding:.45cqw .6cqw;vertical-align:middle}
+tbody tr:nth-child(odd) td{background:#fff8e6}
+td.fn{font-weight:700;white-space:nowrap}
+td.ai{color:var(--muted);white-space:nowrap}
+td.imp{text-align:center;white-space:nowrap;font-variant-numeric:tabular-nums}
+.upd{color:#2f3fb5}
+.pill{display:inline-block;color:#fff;font-weight:700;padding:.2cqw .6cqw;font-size:.92cqw;white-space:nowrap}
+.pill.live{background:var(--live)} .pill.test{background:var(--test)} .pill.dev{background:var(--dev)} .pill.check{background:var(--check)}
+td.st{text-align:center}
+
+/* single-tool page */
+.tool{display:grid;grid-template-columns:1fr 1fr 24cqw;grid-template-rows:auto 1fr;gap:1.2cqw 1.4cqw;flex:1;min-height:0}
+.box h4{background:var(--navy);color:#fff;font-size:1.25cqw;padding:.35cqw .8cqw;display:flex;gap:.6cqw;align-items:center}
+.box h4 i{font-style:normal;background:var(--brand);padding:0 .45cqw;font-size:1.05cqw}
+.box ul{padding-top:.6cqw;font-size:1.08cqw}
+.box.sol li:first-child{color:var(--brand);font-weight:700}
+.shots{grid-column:1/3;display:flex;flex-direction:column;min-height:0}
+.shotrow{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:1cqw;padding-top:.7cqw;min-height:0}
+.shot{display:flex;flex-direction:column;gap:.4cqw;min-height:0}
+.ph{flex:1;min-height:6cqw;border:.14cqw dashed #b5b5b5;background:repeating-linear-gradient(135deg,#fafafa 0 .8cqw,#f1f1f1 .8cqw 1.6cqw);display:grid;place-items:center;text-align:center;color:var(--muted);font-size:.95cqw;padding:.6cqw;position:relative}
+.ph::before{content:attr(data-k);position:absolute;left:0;top:0;background:var(--navy);color:#fff;font-weight:900;font-size:1.1cqw;width:1.9cqw;height:1.9cqw;display:grid;place-items:center}
+.shot .cap{font-size:.98cqw}
+.shot .cap b{color:var(--brand)}
+.side{grid-column:3;grid-row:1/3;background:var(--panel);padding:1.3cqw 1.4cqw;display:flex;flex-direction:column;gap:1.1cqw;font-size:1.05cqw}
+.side h5{font-size:1.35cqw;font-weight:900}
+.side ul{padding-top:.3cqw}
+.side .est{color:var(--brand);font-weight:700}
+.side .mini{width:100%;font-size:.88cqw}
+.side .mini td,.side .mini th{padding:.25cqw .4cqw}
+.side .mini td:first-child,.side .mini td:last-child{white-space:nowrap}
+.note{color:var(--muted);font-size:.9cqw}
+
+/* backup / calc slide */
+.calc td.num,.calc th.num{text-align:right;font-variant-numeric:tabular-nums}
+.calc tr.tot td{font-weight:900;background:#fde3dc}
+.two{display:grid;grid-template-columns:1.5fr 1fr;gap:1.6cqw;flex:1;min-height:0}
+.callout{background:var(--panel);padding:1.2cqw 1.4cqw;display:flex;flex-direction:column;gap:.8cqw}
+.callout h5{font-size:1.3cqw;font-weight:900}
+.formula{font-size:1.25cqw;font-weight:700;background:#fff;border-left:.35cqw solid var(--brand);padding:.6cqw .8cqw}
+
+/* section divider */
+.divider .in{justify-content:center;align-items:flex-start;padding-left:6cqw;background:var(--navy);color:#fff;gap:1cqw}
+.divider h1{font-size:4.4cqw;font-weight:900}
+.divider p{font-size:1.6cqw;opacity:.85}
+
+/* bars (RRH finding) */
+.bars{display:flex;flex-direction:column;gap:.45cqw;font-size:.95cqw}
+.bar{display:grid;grid-template-columns:7.5cqw 1fr 3.4cqw;align-items:center;gap:.5cqw}
+.bar .t{height:1.1cqw;background:#e3e3e3}
+.bar .t i{display:block;height:100%;background:var(--brand)}
+.bar.hl .t i{background:var(--navy)}
+.bar .v{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+
+/* todo slide */
+.todo-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.6cqw;flex:1}
+.todo-grid h5{font-size:1.35cqw;font-weight:900;margin-bottom:.4cqw}
+.draft{position:absolute;top:1.2cqw;right:2.6cqw;background:var(--todo);font-weight:700;font-size:1cqw;padding:.2cqw .6cqw}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<main class="deck">
+
+<!-- 1 Cover -->
+<section class="slide cover" id="cover"><div class="in">
+  <div class="l">
+    <div class="eyebrow">RR Ops ｜ SOP Team</div>
+    <h1>RR AI &amp; Automation Overview</h1>
+    <p>第一線發現的效率問題，Ops RR 主動用 AI 自建工具解決</p>
+    <div class="meta">2026/11 ・ Chris Jhou</div>
+  </div>
+  <div class="r">
+    <div class="big">14</div>
+    <div>項自建自動化、AI 工具與插件</div>
+    <div style="opacity:.85;margin-top:1cqw">11 項已上線</div>
+  </div>
+</div></section>
+
+<!-- 2 Key message -->
+<section class="slide" id="key-message"><div class="in">
+  <div class="hd"><div class="logo">S</div><h2><span class="tag">Overview｜</span>RR Ops 主動用 AI 自建 14 項工具，RR Helper 每週服務 136 位專員、年省約 7 FTE</h2></div>
+  <div class="body">
+    <p class="lead">Ops 不只依專案與策略執行既有業務、管理人力，也會主動找出負責業務的效率問題，用 AI 自己動手解決。</p>
+    <div class="tiles">
+      <div class="tile"><div class="n">136</div><div class="k">位專員每週使用 RR Helper</div><div class="s">BPO 98・TW 38，平日每天 91–122 人</div></div>
+      <div class="tile"><div class="n">≈7<small> FTE</small></div><div class="k">RR Helper 年省工時</div><div class="s">每週約 272 小時，年化約 14,100 小時（估算）</div></div>
+      <div class="tile"><div class="n">93%</div><div class="k">QA 重複匯入一次消除</div><div class="s">舊流程匯入 732 筆只完成 53 筆，QASA 改為按需匯入</div></div>
+      <div class="tile"><div class="n">25+</div><div class="k">支自動化腳本</div><div class="s">日常報表、Mass 批次、管理同步，涵蓋 7 條業務線</div></div>
+    </div>
+    <div class="cycle">
+      <div class="step"><b>STEP 1</b><span>第一線發現痛點</span></div>
+      <div class="arrow">→</div>
+      <div class="step"><b>STEP 2</b><span>用 AI 自己動手做</span></div>
+      <div class="arrow">→</div>
+      <div class="step"><b>STEP 3</b><span>用數據驗證成效</span></div>
+    </div>
+    <p class="cyclecap">每項工具都走這個循環。全部工具年化 impact 合計 <span class="todo">【待補】USD</span></p>
+  </div>
+  <div class="ft">Private &amp; Confidential<b>2</b></div>
+</div></section>
+
+<!-- 3 Summary table 1 -->
+<section class="slide" id="summary-systems"><div class="in">
+  <div class="hd"><div class="logo">S</div><h2><span class="tag">AI Projects - RR｜</span>5 項複合式自動化系統，服務 TW、BPO、QA 與 Training</h2></div>
+  <div class="body">
+    <div class="cat"><h3>1. 複合式自動化系統</h3><span>整合多項技術的完整系統，服務多個單位處理複雜流程</span></div>
+    <table>
+      <thead><tr><th style="width:6%">Builder</th><th style="width:15%">Feature Name</th><th>Description</th><th style="width:11%">AI 運用</th><th style="width:8%">Status</th><th style="width:9%">Annual Impact</th></tr></thead>
+      <tbody>
+        <tr><td>RR SOP</td><td class="fn">RR Helper</td><td>* 功能：DMS 內的 Chrome 插件，自動帶出 IH 資訊、特殊案件／賣家提醒、QA 回覆與長天數提醒<br><span class="upd">* Update：每週 136 位專員使用，自動功能每週省約 270 小時</span></td><td class="ai">AI 協作開發</td><td class="st"><span class="pill live">Live</span></td><td class="imp">≈14,100 hr<br><span class="todo">USD 待補</span></td></tr>
+        <tr><td>RR SOP</td><td class="fn">QA Smart Assign (QASA)</td><td>* 功能：依 BPO 班表自動抽樣、派案，QA 報表自動更新，WJ 即時通知 BPO<br><span class="upd">* Update：10/13 上線，擴充 TW 中</span></td><td class="ai">AI 協作開發</td><td class="st"><span class="pill live">Live</span></td><td class="imp"><span class="todo">待補</span></td></tr>
+        <tr><td>RR SOP</td><td class="fn">RR Scheduler</td><td>* 功能：統一管理 RR 自動化腳本的排程平台，失敗即時通知、免改碼重跑<br><span class="upd">* Update：25+ 支腳本、7 條業務線；準備上傳公司 GitLab 送審</span></td><td class="ai">AI 協作開發</td><td class="st"><span class="pill live">Live</span></td><td class="imp"><span class="todo">待補</span></td></tr>
+        <tr><td>RR SOP</td><td class="fn">RR AI Quiz Platform</td><td>* 功能：模擬 DMS 的 BPO 考題平台，AI 依真實案例出變化題並預先評分<br><span class="upd">* Update：V2 11/05 上線；V3（SOP 路徑題）開發中</span></td><td class="ai">LLM 出題、評分</td><td class="st"><span class="pill live">Live</span></td><td class="imp"><span class="todo">待補</span></td></tr>
+        <tr><td>RR SOP</td><td class="fn">SOP Practice Simulator</td><td>* 功能：互動式 SOP 決策樹 + AI 生成訓練案例，新人不在正式案件上試錯<br><span class="upd">* Update：遷移到 MyPage</span></td><td class="ai">LLM 生成案例</td><td class="st"><span class="pill live">Live</span></td><td class="imp"><span class="todo">待補</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ft">Private &amp; Confidential<b>3</b></div>
+</div></section>
+
+<!-- 4 Summary table 2 -->
+<section class="slide" id="summary-llm"><div class="in">
+  <div class="hd"><div class="logo">S</div><h2><span class="tag">AI Projects - RR｜</span>9 項工具把查詢、翻譯與資料整理交給 AI 與排程</h2></div>
+  <div class="body" style="gap:.8cqw">
+    <div class="cat"><h3>2. LLM 自動化</h3><span>用 LLM 理解文字，自動判斷、查詢或生成內容</span></div>
+    <table>
+      <thead><tr><th style="width:6%">Builder</th><th style="width:20%">Feature Name</th><th>Description</th><th style="width:9%">Status</th><th style="width:9%">Annual Impact</th></tr></thead>
+      <tbody>
+        <tr><td>RR SOP</td><td class="fn">SOP Q&amp;A / Exception Product Agent</td><td>用白話回答 SOP 問題，關鍵字觸發查詢例外商品清單</td><td class="st"><span class="pill check">確認</span></td><td class="imp"><span class="todo">待補</span></td></tr>
+        <tr><td>RR SOP</td><td class="fn">Logistics Tracking Agent</td><td>自動辨識物流商並串接 track.tw 查件，有防止 AI 捏造連結的檢查</td><td class="st"><span class="pill check">確認</span></td><td class="imp"><span class="todo">待補</span></td></tr>
+        <tr><td>RR SOP</td><td class="fn">Slides Batch Translator</td><td>用內部 LLM 整份翻譯 Google Slides，先建固定詞彙表確保用語一致</td><td class="st"><span class="pill live">Live</span></td><td class="imp"><span class="todo">待補</span></td></tr>
+      </tbody>
+    </table>
+    <div class="cat"><h3>3. Vibe coding 應用：資料整理自動化</h3><span>把手動整理資料的步驟變成一鍵或排程執行</span></div>
+    <table>
+      <thead><tr><th style="width:6%">Builder</th><th style="width:20%">Feature Name</th><th>Description</th><th style="width:9%">Status</th><th style="width:9%">Annual Impact</th></tr></thead>
+      <tbody>
+        <tr><td>RR SOP</td><td class="fn">Daily &gt;23 Case Tracker</td><td>每日更新長天數案件追蹤表，保留首次列入日與處理備註</td><td class="st"><span class="pill live">Live</span></td><td class="imp"><span class="todo">待補</span></td></tr>
+        <tr><td>RR SOP</td><td class="fn">Weekly OKR Report Automation</td><td>每週自動計算 AHT、CSAT、E2E SLA、Judge Rate 並寫入 OKR 表</td><td class="st"><span class="pill live">Live</span></td><td class="imp"><span class="todo">待補</span></td></tr>
+        <tr><td>RR SOP</td><td class="fn">Mass Batch Execution Scripts</td><td>批次（Mass）自動執行案件處理與每日報表</td><td class="st"><span class="pill live">Live</span></td><td class="imp"><span class="todo">待補</span></td></tr>
+        <tr><td>RR SOP</td><td class="fn">Template Filter Tool</td><td>工版條件篩選查詢頁，職代一鍵同步資料</td><td class="st"><span class="pill live">Live</span></td><td class="imp"><span class="todo">待補</span></td></tr>
+        <tr><td>RR SOP</td><td class="fn">IH Queue Lookup Tool</td><td>轉單佇列查詢頁，減少轉錯佇列</td><td class="st"><span class="pill live">Live</span></td><td class="imp"><span class="todo">待補</span></td></tr>
+        <tr><td>RR SOP</td><td class="fn">CSAT Dashboard</td><td>取代 Excel 的 CSAT 分析頁，下一步加入 AI 自動解讀根因</td><td class="st"><span class="pill dev">開發中</span></td><td class="imp"><span class="todo">待補</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ft">Private &amp; Confidential<b>4</b></div>
+</div></section>
+
+<!-- 5 RR Helper -->
+<section class="slide" id="rr-helper"><div class="in">
+  <div class="hd"><div class="logo">S</div><h2><span class="tag">AI Projects - RR｜RR Helper</span> 每週 136 位專員使用，自動查詢與一鍵功能每週省下約 270 小時</h2></div>
+  <div class="body">
+    <div class="tool">
+      <div class="box"><h4><i>1</i>Pain Point</h4><ul>
+        <li>一件案子要在 DMS 與多份 Google Sheet 間來回查資料（IH、賣家提醒、特殊案件、國定假日）</li>
+        <li>提問後要反覆回表單確認 QA 是否回覆，長天數案件靠自己追</li>
+        <li>提醒清單要改程式、發新版才能更新</li></ul></div>
+      <div class="box sol"><h4><i>2</i>Solution</h4><ul>
+        <li>製作 Chrome 插件，把提醒與查詢直接帶進 DMS</li>
+        <li>開案自動帶出 IH 資訊與特殊案件提醒</li>
+        <li>待辦清單標出新 QA 回覆與長天數案件</li>
+        <li>職代改 Sheet 後，透過 AI Agent 一鍵更新清單</li></ul></div>
+      <div class="shots box"><h4><i>3</i>Screenshot</h4>
+        <div class="shotrow">
+          <div class="shot"><div class="ph" data-k="A">截圖：案件頁的 IH 資訊與特殊案件提示</div><div class="cap"><b>開案自動提醒</b>：該注意的事開案就看到</div></div>
+          <div class="shot"><div class="ph" data-k="B">截圖：DMS 待辦清單的 QA 回覆標記</div><div class="cap"><b>QA 回覆提醒</b>：有新回覆亮燈，處理完熄燈</div></div>
+          <div class="shot"><div class="ph" data-k="C">截圖：SeaTalk 呼叫 @Automation Assistant</div><div class="cap"><b>一鍵更新清單</b>：業務單位自己維護</div></div>
+        </div></div>
+      <div class="side">
+        <div><h5>Feature Summary</h5><ul><li>DMS 內的 Chrome 插件</li><li>自動查詢 + 判定提醒 + 一鍵帶入</li></ul></div>
+        <div><h5>Feature Impact</h5><ul>
+          <li class="est">Estimate annual impact：≈14,100 小時（≈7 FTE）× 時薪 <span class="todo">USD 待補</span>（Indirect）</li>
+          <li>136 位專員／週（BPO 98・TW 38）</li>
+          <li>IH 自動查詢每週 38,165 件次，省約 212 小時</li>
+          <li>開案判定提醒每週約 10.8 萬次，降低判錯風險</li></ul></div>
+        <p class="note">資料：RRH Activity DB，2026/11/09–11/15；計算明細見 Backup。</p>
+      </div>
+    </div>
+  </div>
+  <div class="ft">Private &amp; Confidential<b>5</b></div>
+</div></section>
+
+<!-- 6 QASA -->
+<section class="slide" id="qasa"><div class="in">
+  <div class="hd"><div class="logo">S</div><h2><span class="tag">AI Projects - RR｜QASA</span> QA 抽樣、派案、報表全自動，BPO 判錯當天就收到通知並改正</h2></div>
+  <div class="body">
+    <div class="tool">
+      <div class="box"><h4><i>1</i>Pain Point</h4><ul>
+        <li>手動抽樣派案，為保險大量匯入（10/01 匯入 732 筆只完成 53 筆）</li>
+        <li>做不完的匯入案件，Leader 每天手動刪除（BPO、TW 都是）</li>
+        <li>BPO 要求每人每週抽樣數一致，出勤與 QA 人力變動難控制</li>
+        <li>QA Lead 每日／每週手動整理報表</li>
+        <li>WJ 要等報表才知道，錯誤可能已重複好幾天</li></ul></div>
+      <div class="box sol"><h4><i>2</i>Solution</h4><ul>
+        <li>依班表算每人累計目標，只抽差額並自動派案</li>
+        <li>BPO 匯入量銳減免刪除，TW 由程式協助刪除</li>
+        <li>RR Scheduler 自動更新 QA 報表資料</li>
+        <li>每小時更新分數，WJ 即時 SeaTalk 通知 BPO</li>
+        <li>Dashboard 給 BPO、QA、Training 隨時查看</li></ul></div>
+      <div class="shots box"><h4><i>3</i>Screenshot</h4>
+        <div class="shotrow">
+          <div class="shot"><div class="ph" data-k="A">截圖：每人目標／已完成／待抽</div><div class="cap"><b>自動抽樣派案</b>：只匯入需要的案件</div></div>
+          <div class="shot"><div class="ph" data-k="B">截圖：SeaTalk WJ 通知</div><div class="cap"><b>WJ 即時通知</b>：判錯當天通知 BPO</div></div>
+          <div class="shot"><div class="ph" data-k="C">截圖：MyPage 分數、扣分原因、問題頻率</div><div class="cap"><b>Dashboard</b>：BPO 自查，QA／Training 看趨勢</div></div>
+        </div></div>
+      <div class="side">
+        <div><h5>Feature Impact</h5>
+          <p class="est">Estimate annual impact：<span class="todo">USD 待補</span></p></div>
+        <div><h5 style="font-size:1.15cqw">① QA 與 Leader 省下的時間（Direct）</h5><ul>
+          <li>重複匯入：732 筆中約 93% 最後被刪除 → 只匯入所需</li>
+          <li>匯入＋派案 <span class="todo">每週 X 小時</span></li>
+          <li>Leader 刪除匯入案件 <span class="todo">每天 X 分</span> → 免刪／自動刪</li>
+          <li>QA Lead 整理報表 <span class="todo">每日 X 分＋每週 X 小時</span></li></ul></div>
+        <div><h5 style="font-size:1.15cqw">② 品質即時改善（Indirect）</h5><ul>
+          <li>WJ 得知時間：<span class="todo">過去 X 天</span> → 當天</li>
+          <li>Dashboard 使用人數 <span class="todo">待補</span></li></ul></div>
+      </div>
+    </div>
+  </div>
+  <div class="ft">Private &amp; Confidential<b>6</b></div>
+</div></section>
+
+<!-- 7 RR Scheduler -->
+<section class="slide" id="rr-scheduler"><div class="in">
+  <div class="hd"><div class="logo">S</div><h2><span class="tag">AI Projects - RR｜RR Scheduler</span> Leader 每天的報表、系統設定、Mass 案件處理全部交給排程，省下零碎時間與工作切換</h2></div>
+  <div class="body">
+    <div class="tool">
+      <div class="box"><h4><i>1</i>Pain Point</h4><ul>
+        <li>Leader 每天的報表、系統設定、案件管理把時間切成碎片，一直切換工作狀態</li>
+        <li>Mass 無法在 DMS 處理：篩案件 → 做 xlsx → 上傳 → 選結果與判決信 → 送出</li>
+        <li>部分 Mass 要逐案看對話，Leader 處理更花時間</li></ul></div>
+      <div class="box sol"><h4><i>2</i>Solution</h4><ul>
+        <li>Leader 的零碎例行工作全部交給排程</li>
+        <li>Mass 自動篩案、產檔、上傳、選結果與判決信後送出</li>
+        <li>一個 Dashboard 看全部任務，失敗即時 SeaTalk 通知</li></ul></div>
+      <div class="shots box"><h4><i>3</i>Screenshot</h4>
+        <div class="shotrow">
+          <div class="shot"><div class="ph" data-k="A">截圖：Dashboard 任務清單</div><div class="cap"><b>任務總覽</b>：25+ 支腳本一頁看完</div></div>
+          <div class="shot"><div class="ph" data-k="B">截圖：Mass 執行結果／處理件數</div><div class="cap"><b>Mass 自動處理</b>：不用再做 xlsx、上傳、送出</div></div>
+          <div class="shot"><div class="ph" data-k="C">截圖：SeaTalk 失敗通知</div><div class="cap"><b>失敗通知</b>：出問題當下就知道</div></div>
+        </div></div>
+      <div class="side">
+        <div><h5>Leader 省下的時間</h5>
+          <table class="mini"><thead><tr><th>類別</th><th>Leader 人工流程</th><th>月省</th></tr></thead><tbody>
+            <tr><td><b>日常報表</b></td><td>撈資料、整理、貼報表</td><td><span class="todo">X hr</span></td></tr>
+            <tr><td><b>系統設定</b></td><td>手動更新設定值</td><td><span class="todo">X hr</span></td></tr>
+            <tr><td><b>Mass 處理</b></td><td>篩案、xlsx、上傳、判決信；部分看對話</td><td><span class="todo">X hr</span></td></tr>
+          </tbody></table>
+          <p class="note" style="margin-top:.3cqw">每次人工分鐘 × 每月次數 ÷ 60</p></div>
+        <div><h5>Feature Impact</h5><ul>
+          <li class="est">Estimate annual impact：<span class="todo">USD 待補</span>（Direct，Leader 時薪）</li>
+          <li>Mass 每月自動處理 <span class="todo">X 件</span></li>
+          <li>未計入：反覆切換工作的專注力損耗（保守不計）</li></ul></div>
+      </div>
+    </div>
+  </div>
+  <div class="ft">Private &amp; Confidential<b>7</b></div>
+</div></section>
+
+<!-- 8 Backup divider -->
+<section class="slide divider" id="backup"><div class="in">
+  <h1>Backup</h1>
+  <p>RR Helper 計算明細・RR AI Quiz Platform</p>
+</div></section>
+
+<!-- 9 RR Helper calc -->
+<section class="slide" id="rr-helper-calc"><div class="in">
+  <div class="hd"><div class="logo">S</div><h2><span class="tag">(Backup) RR Helper｜</span>一週省下 271.6 小時，78% 來自開案自動查 IH</h2></div>
+  <div class="body">
+    <div class="two">
+      <table class="calc">
+        <thead><tr><th>功能</th><th class="num">一週次數</th><th class="num">使用人數</th><th class="num">每次省（秒）</th><th class="num">每週省（小時）</th></tr></thead>
+        <tbody>
+          <tr><td>IH 案件量自動查詢<br><span class="note">每人每天每件只算一次；實際觸發 71,192 次</span></td><td class="num">38,165</td><td class="num">134</td><td class="num">20</td><td class="num">212.0</td></tr>
+          <tr><td>Remark 彙整</td><td class="num">4,155</td><td class="num">41</td><td class="num">30</td><td class="num">34.6</td></tr>
+          <tr><td>SPX Re-inbound 自動查詢</td><td class="num">613</td><td class="num">23</td><td class="num">60</td><td class="num">10.2</td></tr>
+          <tr><td>表單欄位複製</td><td class="num">941</td><td class="num">45</td><td class="num">30</td><td class="num">7.8</td></tr>
+          <tr><td>環保無包裝一鍵帶入</td><td class="num">1,195</td><td class="num">37</td><td class="num">15</td><td class="num">5.0</td></tr>
+          <tr><td>BI 公式簡化</td><td class="num">64</td><td class="num">6</td><td class="num">60</td><td class="num">1.1</td></tr>
+          <tr><td>Remark 歷程／FSB 複製</td><td class="num">325</td><td class="num">11</td><td class="num">10</td><td class="num">0.9</td></tr>
+          <tr class="tot"><td>合計</td><td></td><td></td><td></td><td class="num">271.6</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <h5>換算方式</h5>
+        <div class="formula">271.6 小時 × 52 週 ≈ 14,100 小時／年</div>
+        <div class="formula">÷ 2,000 工時／人年 ≈ 7 FTE</div>
+        <h5>未計入工時</h5>
+        <ul><li>開案判定提醒每週約 10.8 萬次（含重複開啟），降低判錯風險</li>
+        <li>QA／長天數提醒：94 位專員開啟面板 1,503 次</li></ul>
+        <p class="note">每次省下秒數為估算 <span class="todo">待實測確認</span>。資料：RRH Activity DB，2026/11/09–11/15。</p>
+      </div>
+    </div>
+  </div>
+  <div class="ft">Private &amp; Confidential<b>9</b></div>
+</div></section>
+
+<!-- 10 Quiz -->
+<section class="slide" id="quiz"><div class="in">
+  <div class="hd"><div class="logo">S</div><h2><span class="tag">(Backup) RR AI Quiz Platform｜</span>AI 把一件真實案例變成多題練習，BPO 在模擬 DMS 上大量練判斷</h2></div>
+  <div class="body">
+    <div class="tool">
+      <div class="box"><h4><i>1</i>Pain Point</h4><ul>
+        <li>BPO 在協議判斷、證據判讀容易判錯，需要大量練習</li>
+        <li>Google Forms 出題靠 Trainer 手寫，好案例少</li>
+        <li>練習畫面與 DMS 不同，判斷難帶回工作</li></ul></div>
+      <div class="box sol"><h4><i>2</i>Solution</h4><ul>
+        <li>AI 依真實案例生成變化題，並先幫理由題評分</li>
+        <li>作答畫面模擬 DMS，專員自己找資訊</li>
+        <li>Trainer 一站式審題、發布、看成績</li></ul></div>
+      <div class="shots box"><h4><i>3</i>Screenshot</h4>
+        <div class="shotrow">
+          <div class="shot"><div class="ph" data-k="A">截圖：模擬 DMS 作答畫面</div><div class="cap"><b>專員作答</b>：與實際工作畫面一致</div></div>
+          <div class="shot"><div class="ph" data-k="B">截圖：樣本庫／審題畫面</div><div class="cap"><b>AI 出題</b>：一件案例變出多題</div></div>
+          <div class="shot"><div class="ph" data-k="C">截圖：成績頁與 AI 評分信心度</div><div class="cap"><b>成績追蹤</b>：低分者直接輔導</div></div>
+        </div></div>
+      <div class="side">
+        <div><h5>Feature Impact</h5><ul>
+          <li class="est">Estimate annual impact：<span class="todo">USD 待補</span>（Indirect）</li>
+          <li>Trainer 出一題：手寫 <span class="todo">X 分</span> → AI＋審題 <span class="todo">X 分</span></li>
+          <li>場次／作答人數／題數 <span class="todo">待補</span></li>
+          <li>受測專員 QA 分數前後對比 <span class="todo">待補</span></li></ul></div>
+      </div>
+    </div>
+  </div>
+  <div class="ft">Private &amp; Confidential<b>10</b></div>
+</div></section>
+
+<!-- 11 Draft todo -->
+<section class="slide" id="todo"><div class="in">
+  <div class="draft">草稿用，簡報前刪除</div>
+  <div class="hd"><div class="logo">S</div><h2><span class="tag">待補清單｜</span>先定時薪口徑與 Direct／Indirect，年化 USD 才算得出來</h2></div>
+  <div class="body">
+    <div class="todo-grid">
+      <div><h5>需要確認</h5><ul>
+        <li>時薪（USD）與 Direct／Indirect 定義，和 Ops 簡報同一套</li>
+        <li>Dispute AI Judging 已在 Ops 簡報，這份不重複列</li>
+        <li>「14 項全部用 AI 開發或內建 AI」是否屬實</li>
+        <li>SOP Q&amp;A Agent、Logistics Agent、Slides Translator 狀態</li>
+        <li>Mass 腳本用途與每月處理件數；Scheduler 腳本歸類</li>
+        <li>RR Helper 各功能「每次省幾秒」實測</li></ul></div>
+      <div><h5>數字來源</h5>
+        <table class="mini" style="font-size:1cqw"><thead><tr><th>數字</th><th>來源</th></tr></thead><tbody>
+          <tr><td>QASA 匯入／派案、報表工時</td><td>問 QA Lead</td></tr>
+          <tr><td>WJ 通知次數、錯誤重複率</td><td>QASA｜Database（匯出 CSV）</td></tr>
+          <tr><td>腳本次數、成功率</td><td>RR Scheduler History</td></tr>
+          <tr><td>Quiz 場次、人數、題數</td><td>Quiz Firebase</td></tr>
+          <tr><td>QA 提問表停留時間</td><td>RRH DB（需提供表單名稱）</td></tr>
+        </tbody></table>
+        <h5 style="margin-top:1cqw">截圖注意</h5><ul><li>RID、買賣家帳號、專員 email／姓名全部去識別化</li><li>RRH 只截團體彙總</li></ul></div>
+    </div>
+  </div>
+  <div class="ft">Private &amp; Confidential<b>11</b></div>
+</div></section>
+
+</main>
+</body>
+</html>
